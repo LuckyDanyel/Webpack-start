@@ -5,6 +5,8 @@ const isDev = process.env.NODE_ENV === 'development';
 const isProd = !isDev;
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var HtmlWebpackPugPlugin = require('html-webpack-pug-plugin');
+
 
 
 const filename = (ext) => isDev ? `[name].${ext}` : `[name].[contenthash].${ext}`;
@@ -12,7 +14,7 @@ const filename = (ext) => isDev ? `[name].${ext}` : `[name].[contenthash].${ext}
 const plugins = () =>  {
     const basePlugins = [
         new HTMLWebpackPlugin({
-            template:  path.resolve(__dirname, 'app/index.html'),
+            template:  path.resolve(__dirname, 'app/index.pug'),
             filename: 'index.html',
             minify: {
                 collapseWhitespace: isProd
@@ -23,6 +25,8 @@ const plugins = () =>  {
             filename: `./css/${filename('css')}`
         }),
         require('autoprefixer'),
+      
+       
     ];
     if(isProd){
         basePlugins.push(
@@ -49,18 +53,26 @@ module.exports = {
         contentBase: path.resolve(__dirname, 'dist'),
         open: true,
         compress: true,
-        hot: true,
-        port: 3000,
+        hot: false,
+        port: 8080,
 
     },
     plugins: plugins(),
     devtool: isProd ? false : 'source-map',
     module:{
         rules:[
-            {
-                test: /\.html$/,
+            // {
+            //     test: /\.html$/,
             
-                loader: 'html-loader'
+            //     loader: 'html-loader'
+            // },
+            {
+                test: /\.pug$/,
+                loader: 'pug-loader',
+                    options: {
+                        pretty: true
+                    }
+               
             },
             {
                 test: /\.css$/i,
@@ -73,7 +85,7 @@ module.exports = {
                 },
             },
             'css-loader',
-            'postcss-loader'
+            
         
         ],
         
