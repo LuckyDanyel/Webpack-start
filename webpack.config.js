@@ -1,11 +1,13 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-
+const webpack = require('webpack');
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = !isDev;
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var HtmlWebpackPugPlugin = require('html-webpack-pug-plugin');
+const HtmlWebpackPugPlugin = require('html-webpack-pug-plugin');
+const CopyWepbackPlugin = require('copy-webpack-plugin');
+
 
 
 
@@ -13,17 +15,20 @@ const filename = (ext) => isDev ? `[name].${ext}` : `[name].[contenthash].${ext}
 
 const plugins = () =>  {
     const basePlugins = [
+        
+        new CleanWebpackPlugin(),
         new HTMLWebpackPlugin({
-            template:  path.resolve(__dirname, 'app/index.pug'),
+            template:  path.join(__dirname, 'app/index.pug'),
             filename: 'index.html',
             minify: {
                 collapseWhitespace: isProd
             }
         }),
-        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
             filename: `./css/${filename('css')}`
         }),
+        
+            
         require('autoprefixer'),
       
        
@@ -41,31 +46,31 @@ module.exports = {
     context: path.resolve(__dirname, 'app'),
     mode: 'development',
     entry: '../app/js/main.js',
+    target: process.env.NODE_ENV === "development" ? "web" : "browserslist",
+    watch: true,
+    experiments: {
+        asset: true,
+    },
     output: {
         filename: `./js/${filename('js')}` ,
         path: path.resolve(__dirname, 'dist'),
-        
-       
+        assetModuleFilename: 'dist/[name][ext]'
         
     },
     devServer: {
         historyApiFallback: true,
-        contentBase: path.resolve(__dirname, 'dist'),
+        contentBase: path.join(__dirname, 'dist'),
         open: true,
         compress: true,
-        hot: false,
+        hot: true,
         port: 8080,
+       
 
     },
     plugins: plugins(),
-    devtool: isProd ? false : 'source-map',
+     devtool: 'source-map',
     module:{
         rules:[
-            // {
-            //     test: /\.html$/,
-            
-            //     loader: 'html-loader'
-            // },
             {
                 test: /\.pug$/,
                 loader: 'pug-loader',
@@ -75,12 +80,18 @@ module.exports = {
                
             },
             {
+                test: /\.html$/,
+            
+                loader: 'html-loader'
+            },
+            {
                 test: /\.css$/i,
                 use: [
                 {
                 loader: MiniCssExtractPlugin.loader,
                 options: {
                     hmr: isDev,
+                   
                        
                 },
             },
@@ -90,18 +101,34 @@ module.exports = {
         ],
         
     },
+           
             {
                 test: /\.s[ac]ss$/,
                 use: [MiniCssExtractPlugin.loader, 
+                    
                     'css-loader', 
+                    'resolve-url-loader',
                     'sass-loader', 
                     'postcss-loader',
+                    
                 ],
+            },
+            {
+                test: /\.(svg|eot|ttf|woff|woff2)$/,
+        
+                type: 'asset',
+                generator:{
+                    filename: 'fonts/[name][ext][query]',
+                    publicPath: '../'
+                    
+                },
+              
+                
+                
             },
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
                 type: 'asset/resource',
-
                 generator: {
                     filename: 'images/[name][ext][query]',
                     
@@ -112,14 +139,7 @@ module.exports = {
                 exclude: /node_modules/,
                 use: ['babel-loader'],
             },
-            {
-                test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
-                type: 'asset/resource',
-                generator:{
-                  filename: 'fonts/[name][ext][query]'
-                }
-                
-            }
+           
         ]
     }
 };

@@ -1,0 +1,15 @@
+@import './helpers/global';
+
+@import '../blocks/form-elements/text/subscribe-email/subscribe-email';
+
+@import '../blocks/form-elements/text/text-date/text-date';
+
+@import '../blocks/form-elements/text/text-email/text-email';
+
+@import '../blocks/form-elements/text/form-elements__text';
+
+
+p{
+    font-family: "Merriweather-Black";
+    display: flex;
+}
