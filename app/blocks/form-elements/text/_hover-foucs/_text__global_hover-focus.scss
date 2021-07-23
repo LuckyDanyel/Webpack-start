@@ -1,0 +1,11 @@
+.text__global_hover-focus{
+    &:hover{
+        border-color:$DarkShade-50;
+    }
+    &:focus{
+        border-color:$DarkShade-50;
+            &::placeholder{
+                opacity: 0;
+            }
+    }
+}

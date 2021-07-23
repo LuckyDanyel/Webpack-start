@@ -1,3 +1,6 @@
+include blocks/form-elements/text/__user/text__user.pug
+include blocks/form-elements/text/__date/text__date.pug
+include blocks/form-elements/text/__subscribe-email/text__subscribe__email.pug
 doctype html
 html(lang="ru")
       head
@@ -7,8 +10,11 @@ html(lang="ru")
             title Document
       body
             
-            include blocks/form-elements/text/subscribe-email/subscribe-email
-            include blocks/form-elements/text/text-date/text-date
-            include blocks/form-elements/text/text-email/text-email
-            p Привяу
+            +TextSubscribe()
+            +TextDate()
+            +TextUser("Email", "Пароль", "pay-user")
+            
+            
+
+            
             
