@@ -1,6 +1,4 @@
-include blocks/form-elements/text/__user/text__user.pug
-include blocks/form-elements/text/__date/text__date.pug
-include blocks/form-elements/text/__subscribe-email/text__subscribe__email.pug
+
 doctype html
 html(lang="ru")
       head
@@ -9,10 +7,10 @@ html(lang="ru")
             meta(name="viewport", content="width=device-width, initial-scale=1.0")
             title Document
       body
+            img(src = require("./images/1.jpg") alt="", srcset="")
+            img(src = require("./images/2.jpg") alt="", srcset="")
+            img(src = require("./images/3.jpg") alt="", srcset="")
             
-            +TextSubscribe()
-            +TextDate()
-            +TextUser("Email", "Пароль", "pay-user")
             
             
 

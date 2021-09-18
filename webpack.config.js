@@ -7,6 +7,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPugPlugin = require('html-webpack-pug-plugin');
 const CopyWepbackPlugin = require('copy-webpack-plugin');
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 
 
 
@@ -27,15 +28,31 @@ const plugins = () =>  {
         new MiniCssExtractPlugin({
             filename: `./css/${filename('css')}`
         }),
-        
-            
-        require('autoprefixer'),
       
        
     ];
     if(isProd){
         basePlugins.push(
-            
+            new ImageMinimizerPlugin({
+                minimizerOptions: {
+                  plugins: [
+                    ['gifsicle', { interlaced: true }],
+                    ['jpegtran', { progressive: true }],
+                    ['optipng', { optimizationLevel: 5 }],
+                    [
+                      'svgo',
+                      {
+                        plugins: [
+                          {
+                            removeViewBox: false,
+                          },
+                        ],
+                      },
+                    ],
+                  ],
+                },
+              }),
+              require('autoprefixer'),
         )
     }
 
@@ -81,7 +98,6 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-            
                 loader: 'html-loader'
             },
             {
@@ -90,9 +106,7 @@ module.exports = {
                 {
                 loader: MiniCssExtractPlugin.loader,
                 options: {
-                    hmr: isDev,
-                   
-                       
+                    hmr: isDev,     
                 },
             },
             'css-loader',

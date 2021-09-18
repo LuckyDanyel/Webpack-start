@@ -1,14 +1,5 @@
-@import './helpers/global';
-
-/*----------- litle blocks ---------------
-//----------- text-blocks  --------------*/
-@import '../blocks/form-elements/text/text.scss';
-@import '../blocks/form-elements/text/_hover-foucs/text__global_hover-focus.scss';
-
-@import '../blocks/form-elements/text/__date/text__date.scss';
-
-@import '../blocks/form-elements/text/__subscribe-email/text__subscribe-email.scss';
-@import '../blocks/form-elements/text/__subscribe-email/_width/text__subsribe-email_width.scss';
-
-@import '../blocks/form-elements/text/__user/text__user.scss';
-/*----------- text-blocks  --------------*/
+body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+}
