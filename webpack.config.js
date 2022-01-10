@@ -6,10 +6,6 @@ const isProd = !isDev;
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPugPlugin = require('html-webpack-pug-plugin');
-const CopyWepbackPlugin = require('copy-webpack-plugin');
-const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
-
-
 
 
 const filename = (ext) => isDev ? `[name].${ext}` : `[name].[contenthash].${ext}`;
@@ -33,25 +29,7 @@ const plugins = () =>  {
     ];
     if(isProd){
         basePlugins.push(
-            new ImageMinimizerPlugin({
-                minimizerOptions: {
-                  plugins: [
-                    ['gifsicle', { interlaced: true }],
-                    ['jpegtran', { progressive: true }],
-                    ['optipng', { optimizationLevel: 5 }],
-                    [
-                      'svgo',
-                      {
-                        plugins: [
-                          {
-                            removeViewBox: false,
-                          },
-                        ],
-                      },
-                    ],
-                  ],
-                },
-              }),
+            
               require('autoprefixer'),
         )
     }
@@ -60,23 +38,28 @@ const plugins = () =>  {
 };
 
 module.exports = {
-    context: path.resolve(__dirname, 'app'),
+    // context: path.resolve(__dirname, 'app'),
+    // mode: 'development',
+    // entry: '../app/js/main.js',
+    // target: process.env.NODE_ENV === "development" ? "web" : "browserslist",
+    // watch: true,
+    // output: {
+    //     filename: `./js/${filename('js')}` ,
+    //     path: path.resolve(__dirname, 'dist'),
+    //     assetModuleFilename: 'dist/[name][ext]'
+        
+    // },
     mode: 'development',
-    entry: '../app/js/main.js',
+    entry: './app/js/index.ts',
     target: process.env.NODE_ENV === "development" ? "web" : "browserslist",
     watch: true,
-    experiments: {
-        asset: true,
-    },
     output: {
-        filename: `./js/${filename('js')}` ,
-        path: path.resolve(__dirname, 'dist'),
-        assetModuleFilename: 'dist/[name][ext]'
-        
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist'),
     },
     devServer: {
         historyApiFallback: true,
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         open: true,
         compress: true,
         hot: true,
@@ -85,16 +68,21 @@ module.exports = {
 
     },
     plugins: plugins(),
-     devtool: 'source-map',
+    devtool: isProd === true ? 'eval' : 'source-map',
     module:{
         rules:[
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+            
             {
                 test: /\.pug$/,
                 loader: 'pug-loader',
                     options: {
                         pretty: true
                     }
-               
             },
             {
                 test: /\.html$/,
@@ -113,8 +101,12 @@ module.exports = {
             
         
         ],
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    },
         
     },
+    
            
             {
                 test: /\.s[ac]ss$/,
